@@ -4,6 +4,7 @@ user = require './routes/user'
 http = require 'http'
 path = require 'path'
 redis = require 'redis'
+
 config = require './config'
 
 app = express()
@@ -11,10 +12,6 @@ app = express()
 app.configure 'production', ->
   app.set "port", process.env.PORT || 80
   config = require './configProd'
-
-client = redis.createClient config.redis.client.port, config.redis.client.url
-client.on "connect", ->
-  console.log "connected"
 
 app.configure ->
   app.set('port', process.env.PORT || 3000)
@@ -35,3 +32,18 @@ app.get '/users', user.list
 
 http.createServer(app).listen app.get('port'), ->
   console.log("Express server listening on port " + app.get('port'))
+
+createPoll: (args)->
+  console.log arguments
+
+myJobs =
+  create: (a, callback)->
+    createPoll a
+    callback a
+
+worker = require('coffee-resque').connect
+  port: config.redis.client.port
+  host: config.redis.client.url
+.worker "*", myJobs
+
+worker.start()

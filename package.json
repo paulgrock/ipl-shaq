@@ -12,7 +12,8 @@
     "redis": "~0.8.2",
     "hiredis": "~0.1.14",
     "forever": "~0.10.0",
-    "mongoose": "~3.5.4"
+    "mongoose": "~3.5.4",
+    "coffee-resque": "~0.1.8"
   },
   "devDependencies": {
     "nodemon": "~0.7.1",
