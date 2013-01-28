@@ -1,5 +1,5 @@
 mongoose = require 'mongoose'
-pollSchema = require '../schemas/polls'
+pollSchema = require '../../mongo/schemas/polls'
 Poll = mongoose.model 'Poll', pollSchema
 
 voteJobs =
@@ -11,7 +11,6 @@ voteJobs =
       options = voteJobs.incrementTotalFor votedValue, poll.pollOptions
       poll.pollOptions = options
       poll.total += 1
-      console.log poll
       poll.save cb
 
   incrementTotalFor: (votedValue, options)->

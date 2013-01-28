@@ -1,5 +1,5 @@
 mongoose = require 'mongoose'
-pollSchema = require '../schemas/polls'
+pollSchema = require '../../mongo/schemas/polls'
 Poll = mongoose.model 'Poll', pollSchema
 
 pollJobs =

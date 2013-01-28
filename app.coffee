@@ -6,8 +6,7 @@ path = require 'path'
 redis = require 'redis'
 config = require './config'
 mongoose = require 'mongoose'
-pollJobs = require './lib/mongo/jobs/polls'
-voteJobs = require './lib/mongo/jobs/votes'
+Worker = require './lib/workers/worker'
 
 app = express()
 
@@ -37,18 +36,9 @@ app.get '/users', user.list
 http.createServer(app).listen app.get('port'), ->
   console.log "Express server listening on port " + app.get('port')
 
-pollWorker = require('coffee-resque').connect
-  port: config.redis.client.port
-  host: config.redis.client.url
-.worker "polls", pollJobs
-
-voteWorker = require('coffee-resque').connect
-  port: config.redis.client.port
-  host: config.redis.client.url
-.worker "votes", voteJobs
-
-pollWorker.start()
-voteWorker.start()
+new Worker "polls"
+new Worker "votes"
+new Worker "users"
 
 db = mongoose.connection
 db.once 'open', ->
