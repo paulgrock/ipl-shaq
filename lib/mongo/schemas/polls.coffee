@@ -2,18 +2,8 @@ mongoose = require 'mongoose'
 Schema = mongoose.Schema
 ObjectId = Schema.Types.ObjectId
 
-pollOptionsSchema = new Schema
-  name: String
-  votes:
-    type: Number
-    default: 0
-  payout:
-    type: Number
-    min: 0
-    max: 500
-  rollingVotes:
-    type: Number
-    default: 0
+pollOptionsSchema = require './pollOptions'
+voteSchema = require './votes'
 
 optionsLengthValidator = (value)->
   return value.length is 2
@@ -26,7 +16,7 @@ pollSchema = new Schema
   title: String
   startsAt:
     type: Date
-    default: Date.now
+    default: Date.now()
   endsAt: Date
   pollOptions:
     type: [pollOptionsSchema]
@@ -50,7 +40,7 @@ pollSchema = new Schema
       id: ObjectId
       number: Number
       winner: String
-  votes: []
+  votes: [voteSchema]
   competition:
     id: ObjectId
 

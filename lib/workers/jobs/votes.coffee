@@ -13,7 +13,10 @@ voteJobs =
       poll.pollOptions = voteJobs.incrementTotalFor votedValue, poll.pollOptions
       poll.total += 1
       poll.pollOptions = calculator.calculate poll.startsAt, poll.total, poll.pollOptions
-      poll.votes.push userId, votedValue
+      poll.votes.push
+        userId: userId
+        votedFor: votedValue
+        createdAt: Date.now()
       poll.save cb
 
   incrementTotalFor: (votedValue, options)->
