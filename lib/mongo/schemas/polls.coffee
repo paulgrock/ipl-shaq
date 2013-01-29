@@ -50,7 +50,8 @@ pollSchema = new Schema
       id: ObjectId
       number: Number
       winner: String
-  group:
+  votes: []
+  competition:
     id: ObjectId
 
 pollSchema.pre "init", (next)->

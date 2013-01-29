@@ -9,7 +9,8 @@ pollJobs =
       return cb err if err?
       cb()
 
-  update: (pollData, cb)->
+  update: (pollId, pollData, cb)->
+    pollData = closePoll pollData if pollData.state is "inactive"
     Poll.findOneAndUpdate
       id: pollData.id
     , pollData
@@ -26,6 +27,16 @@ pollJobs =
       if pollData.state is "inactive" and !pollData.endsAt?
         pollData.endsAt = Date.now()
       poll.save cb
+
+  closePoll: (pollData)->
+    if pollData.endsAt is null or "null"
+      pollData.endsAt = Date.now()
+      return pollData
+
+    new Event
+    #emit poll close event to dundee
+
+    return pollData
 
   delete: (pollId, cb)->
     Poll.findOneAndRemove

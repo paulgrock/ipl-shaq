@@ -3,7 +3,7 @@ pollSchema = require '../../mongo/schemas/polls'
 Poll = mongoose.model 'Poll', pollSchema
 
 voteJobs =
-  new: (pollData, votedValue, cb)=>
+  new: (pollData, userId, votedValue, cb)->
     Poll.findOne
       id: pollData.id
     , (err, poll)->
@@ -11,6 +11,7 @@ voteJobs =
       options = voteJobs.incrementTotalFor votedValue, poll.pollOptions
       poll.pollOptions = options
       poll.total += 1
+      poll.votes.push userId, votedValue
       poll.save cb
 
   incrementTotalFor: (votedValue, options)->
