@@ -1,12 +1,17 @@
 mongoose = require 'mongoose'
+Event = require '../../events/event'
 pollSchema = require '../../mongo/schemas/polls'
 Poll = mongoose.model 'Poll', pollSchema
 
 pollJobs =
   create: (pollData, cb)->
+    console.log pollData
     poll = new Poll pollData
     poll.save (err, poll)->
       return cb err if err?
+      event = new Event pollData, "poll-start"
+      #event.emit (err, response)->
+      # return cb err if err?
       cb()
 
   update: (pollId, pollData, cb)->
@@ -33,8 +38,9 @@ pollJobs =
       pollData.endsAt = Date.now()
       return pollData
 
-    new Event
-    #emit poll close event to dundee
+
+    event = new Event pollData, "poll-end"
+    #event.emit()
 
     return pollData
 
