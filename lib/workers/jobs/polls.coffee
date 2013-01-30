@@ -3,10 +3,14 @@ Event = require '../../events/event'
 pollSchema = require '../../mongo/schemas/polls'
 Poll = mongoose.model 'Poll', pollSchema
 
+calculator = require '../../payouts/calculator'
+
 pollJobs =
   create: (pollData, cb)->
-    console.log pollData
     poll = new Poll pollData
+    for option in poll.pollOptions
+      option.payout = calculator.calculate poll, option.votes
+
     poll.save (err, poll)->
       return cb err if err?
       event = new Event pollData, "poll-start"

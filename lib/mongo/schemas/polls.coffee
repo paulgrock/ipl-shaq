@@ -48,7 +48,7 @@ pollSchema = new Schema
     ref: "Competitions"
 
 pollSchema.pre "save", (next)->
-  if @pollOptions[0]?.name? && @pollOptions[1]?.name?
+  if @pollOptions[0]?.name? and @pollOptions[1]?.name? and !@title?
     @title = "#{@pollOptions[0].name} vs #{@pollOptions[1].name}"
   next()
 
