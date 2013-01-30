@@ -8,7 +8,10 @@ competitionSchema = new Schema
   title: String
   startsAt: Date
   endsAt: Date
-  polls: [pollSchema]
+  polls: [
+    type: ObjectId
+    ref: "Poll"
+  ]
   stats: [statsSchema]
 
 module.exports = competitionSchema

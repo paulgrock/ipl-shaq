@@ -3,7 +3,6 @@ Schema = mongoose.Schema
 ObjectId = Schema.Types.ObjectId
 
 pollOptionsSchema = require './pollOptions'
-voteSchema = require './votes'
 
 optionsLengthValidator = (value)->
   return value.length is 2
@@ -40,12 +39,17 @@ pollSchema = new Schema
       id: ObjectId
       number: Number
       winner: String
-  votes: [voteSchema]
+  votes: [
+    type: ObjectId
+    ref: 'Votes'
+  ]
   competition:
-    id: ObjectId
+    type: ObjectId
+    ref: "Competitions"
 
-pollSchema.pre "init", (next)->
-  console.log "init"
+pollSchema.pre "save", (next)->
+  if @pollOptions[0]?.name? && @pollOptions[1]?.name?
+    @title = "#{@pollOptions[0].name} vs #{@pollOptions[1].name}"
   next()
 
 module.exports = pollSchema
