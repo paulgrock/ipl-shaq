@@ -5,6 +5,7 @@ Poll = mongoose.model 'Poll', pollSchema
 Vote = mongoose.model 'Vote', voteSchema
 
 calculator = require '../../payouts/calculator'
+Timer = require '../../rollingVotes/timer'
 
 voteJobs =
   new: (pollData, userId, votedValue, cb)->
@@ -27,8 +28,14 @@ voteJobs =
 
       poll.votes.push vote._id
 
-      poll.save (err)->
-        cb()
+      timer = new Timer poll
+      timer.updateRollingVoteCount (err, rollingVotes)->
+        rollingTotal = rollingVotes.total
+        for option in poll.pollOptions
+          option.rollingVotes = rollingVotes[option.name]
+
+        poll.save (err)->
+          cb()
 
   incrementTotalFor: (votedValue, options)->
     for player in options when player.name is votedValue

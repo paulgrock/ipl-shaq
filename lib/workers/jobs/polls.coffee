@@ -4,12 +4,18 @@ pollSchema = require '../../mongo/schemas/polls'
 Poll = mongoose.model 'Poll', pollSchema
 
 calculator = require '../../payouts/calculator'
+Timer = require '../../rollingVotes/timer'
 
 pollJobs =
   create: (pollData, cb)->
     poll = new Poll pollData
+
     for option in poll.pollOptions
       option.payout = calculator.calculate poll, option.votes
+
+    timer = new Timer poll
+    timer.start()
+
 
     poll.save (err, poll)->
       return cb err if err?
@@ -38,13 +44,14 @@ pollJobs =
       poll.save cb
 
   closePoll: (pollData)->
-    if pollData.endsAt is null or "null"
-      pollData.endsAt = Date.now()
-      return pollData
-
-
     event = new Event pollData, "poll-end"
     #event.emit()
+
+    if pollData.endsAt is null or "null"
+      pollData.endsAt = Date.now()
+
+    #calculateScore
+    #calculateAccuracy
 
     return pollData
 
