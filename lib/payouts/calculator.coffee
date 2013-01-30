@@ -1,7 +1,11 @@
 config = require '../../config'
 
 calculator =
-  calculate: (start, total, options)->
+  calculate: (poll)->
+    start = poll.startsAt
+    total = poll.total
+    options = poll.pollOptions
+
     #multiplying by 1000 because ruby uses seconds instead of miliseconds
     since = Math.floor((Date.now() - start * 1000) / 1000 / config.counterInMinutes)
     since = if since >= 9 then 9 else since

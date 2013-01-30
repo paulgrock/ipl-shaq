@@ -14,7 +14,7 @@ voteJobs =
       return cb err if err?
       poll.pollOptions = voteJobs.incrementTotalFor votedValue, poll.pollOptions
       poll.total += 1
-      poll.pollOptions = calculator.calculate poll.startsAt, poll.total, poll.pollOptions
+      poll.pollOptions = calculator.calculate poll
       poll.save (err)->
         vote = new Vote
           userId: userId
