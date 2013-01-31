@@ -1,21 +1,22 @@
 mongoose = require 'mongoose'
-Event = require '../../events/event'
 pollSchema = require '../../mongo/schemas/polls'
 Poll = mongoose.model 'Poll', pollSchema
 
-calculator = require '../../payouts/calculator'
-Timer = require '../../rollingVotes/timer'
+Event = require '../../events/event'
+payouts = require '../../calculators/payout'
+score = require '../../calculators/score'
+accuracy = require '../../calculators/accuracy'
+
+VoteTimer = require '../../rollingVotes/timer'
 
 pollJobs =
   create: (pollData, cb)->
     poll = new Poll pollData
 
     for option in poll.pollOptions
-      option.payout = calculator.calculate poll, option.votes
+      option.payout = payouts.calculate poll, option.votes
 
-    timer = new Timer poll
-    timer.start()
-
+    VoteTimer.start poll
 
     poll.save (err, poll)->
       return cb err if err?
@@ -50,6 +51,7 @@ pollJobs =
     if pollData.endsAt is null or "null"
       pollData.endsAt = Date.now()
 
+    score.calculate poll
     #calculateScore
     #calculateAccuracy
 
@@ -61,7 +63,5 @@ pollJobs =
     , (err, poll)->
       return cb err if err?
       cb()
-
-
 
 module.exports = pollJobs

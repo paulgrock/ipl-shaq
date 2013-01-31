@@ -1,5 +1,6 @@
 mongoose = require 'mongoose'
 Schema = mongoose.Schema
+ObjectId = Schema.Types.ObjectId
 
 userSchema = new Schema
   id:
@@ -15,5 +16,13 @@ userSchema = new Schema
   pushId: String
   twitter: String
   facebook: String
+  pollsParticiatedIn: [
+    type: ObjectId
+    ref: 'Poll'
+  ]
+  stats: [
+    type: ObjectId
+    ref: "Stats"
+  ]
 
 module.exports = userSchema

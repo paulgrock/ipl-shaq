@@ -2,17 +2,12 @@ mongoose = require 'mongoose'
 voteSchema = require '../mongo/schemas/votes'
 Vote = mongoose.model 'Vote', voteSchema
 
-class Timer
+class VoteTimer
   constructor: (@poll, options = {}) ->
 
   getTimeWindow: ->
     voteWindow = 5 #minutes
     return new Date().setMinutes new Date().getMinutes() - voteWindow
-
-  start: ()->
-    setInterval =>
-      @updateRollingVoteCount()
-    , 3000
 
   updateRollingVoteCount: (cb)->
     timeAgo = @getTimeWindow()
@@ -20,7 +15,7 @@ class Timer
       _poll: @poll._id
     .where("createdAt").gte(timeAgo)
     .exec (err, docs)=>
-      return cb err if err?
+      return cb err if err? and cb?
       votes =
         total: docs.length
 
@@ -30,7 +25,13 @@ class Timer
       for doc in docs
         votes[doc.votedFor] += 1
 
-      cb null, votes
+      cb null, votes if cb?
+
+  @start: (poll)->
+    voteTimer = new VoteTimer poll
+    setInterval ->
+      voteTimer.updateRollingVoteCount()
+    , 3000
 
 
-module.exports = Timer
+module.exports = VoteTimer

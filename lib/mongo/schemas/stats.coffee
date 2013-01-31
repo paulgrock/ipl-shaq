@@ -2,6 +2,6 @@ mongoose = require 'mongoose'
 Schema = mongoose.Schema
 ObjectId = Schema.Types.ObjectId
 
-competitionStatsSchema = new Schema
+statsSchema = new Schema
 
-module.exports = competitionStatsSchema
+module.exports = statsSchema

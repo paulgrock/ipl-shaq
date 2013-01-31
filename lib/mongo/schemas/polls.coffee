@@ -43,6 +43,10 @@ pollSchema = new Schema
     type: ObjectId
     ref: 'Vote'
   ]
+  voteSummary: [
+    type: ObjectId
+    ref: 'VoteSummary'
+  ]
   competition:
     type: ObjectId
     ref: "Competitions"

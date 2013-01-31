@@ -1,6 +1,26 @@
 class Updater
-  constructor: (args, options = {}) ->
+  constructor: (@poll, options = {}) ->
+
+  getTimeWindow: ->
+    voteWindow = 5 #minutes
+    return new Date().setMinutes new Date().getMinutes() - voteWindow
 
   rollingVotes: ->
+    timeAgo = @getTimeWindow()
+    Vote.find
+      _poll: @poll._id
+    .where("createdAt").gte(timeAgo)
+    .exec (err, docs)=>
+      return cb err if err?
+      votes =
+        total: docs.length
+
+      for option in @poll.pollOptions
+        votes[option.name] = 0
+
+      for doc in docs
+        votes[doc.votedFor] += 1
+
+      cb null, votes
 
 module.exports = Updater
