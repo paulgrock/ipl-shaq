@@ -22,7 +22,7 @@ userSchema = new Schema
   ]
   stats: [
     type: ObjectId
-    ref: "Stats"
+    ref: "UserStats"
   ]
 
 module.exports = userSchema

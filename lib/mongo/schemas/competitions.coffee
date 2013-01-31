@@ -1,17 +1,23 @@
 mongoose = require 'mongoose'
 Schema = mongoose.Schema
-pollSchema = require '../polls'
+ObjectId = Schema.Types.ObjectId
 
 competitionSchema = new Schema
-  id: String
-  status: String
+  id:
+    type: String
+    required: true
+  status:
+    type: String
+    default: "active"
   title: String
-  startsAt: Date
-  endsAt: Date
+  startsAt:
+    type: Date
+    default: Date.now()
+  endsAt:
+    type: Date
   polls: [
     type: ObjectId
     ref: "Poll"
   ]
-  stats: [statsSchema]
 
 module.exports = competitionSchema

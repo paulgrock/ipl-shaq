@@ -15,5 +15,7 @@ competitionJobs =
       cb()
     ###
 
+  end: ()->
+
 
 module.exports = competitionJobs
