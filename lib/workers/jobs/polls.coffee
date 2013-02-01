@@ -30,7 +30,6 @@ pollJobs =
       startsAt: Date.now()
     , upsert: true
     , (err, competition)->
-      console.log arguments
       competition.polls.push poll._id
       competition.save()
 
