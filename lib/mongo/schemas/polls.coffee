@@ -41,7 +41,7 @@ pollSchema = new Schema
       winner: String
   votes: [
     type: ObjectId
-    ref: 'Votes'
+    ref: 'Vote'
   ]
   competition:
     type: ObjectId

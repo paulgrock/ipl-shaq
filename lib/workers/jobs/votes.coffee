@@ -14,26 +14,21 @@ voteJobs =
       return cb err if err?
       poll.pollOptions = voteJobs.incrementTotalFor votedValue, poll.pollOptions
       poll.total += 1
-      poll.pollOptions = calculator.calculate poll
+
+      for option in poll.pollOptions
+        option.payout = calculator.calculate poll, option.votes
+
+      vote = new Vote
+        userId: userId
+        votedFor: votedValue
+        createdAt: Date.now()
+        _poll: poll._id
+      vote.save()
+
+      poll.votes.push vote._id
+
       poll.save (err)->
-        vote = new Vote
-          userId: userId
-          votedFor: votedValue
-          createdAt: Date.now()
-          _poll: poll._id
-        vote.save()
-
         cb()
-
-
-    Poll.findOne({}).populate("votes").exec (err, poll)->
-      console.log poll
-      console.dir poll.toJSON()
-
-    Vote.findOne({}).populate("_poll").exec (err, vote)->
-      console.log vote
-      console.dir vote.toJSON()
-
 
   incrementTotalFor: (votedValue, options)->
     for player in options when player.name is votedValue
