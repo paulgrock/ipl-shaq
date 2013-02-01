@@ -4,12 +4,11 @@ User = mongoose.model 'User', userSchema
 
 userJobs =
   new: (userData, cb)->
-    User.update
-      id: userData.id,
-      userData,
+    User.findOneAndUpdate id: userData.id,
+      userData
+    ,
       upsert: true
-      multi: true
-    , (err, numberAffected, rawReponse)->
+    , (err, numberAffected)->
       return cb err if err?
       cb()
 
