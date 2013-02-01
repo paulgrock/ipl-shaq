@@ -19,5 +19,9 @@ competitionSchema = new Schema
     type: ObjectId
     ref: "Poll"
   ]
+  scores: [
+    type: ObjectId
+    ref: 'CompetitionSummary'
+  ]
 
 module.exports = competitionSchema
