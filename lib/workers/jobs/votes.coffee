@@ -1,14 +1,8 @@
-mongoose = require 'mongoose'
-
-pollSchema = require '../../mongo/schemas/polls'
-userSchema = require '../../mongo/schemas/users'
-voteSchema = require '../../mongo/schemas/votes'
-voteSummarySchema = require '../../mongo/schemas/voteSummary'
-
-Poll = mongoose.model 'Poll', pollSchema
-Vote = mongoose.model 'Vote', voteSchema
-User = mongoose.model 'User', userSchema
-VoteSummary = mongoose.model 'VoteSummary', voteSummarySchema
+Poll = require '../../mongo/schemas/polls'
+User = require '../../mongo/schemas/users'
+UserStats = require '../../mongo/schemas/stats/users'
+Vote = require '../../mongo/schemas/votes'
+VoteSummary = require '../../mongo/schemas/voteSummary'
 
 payouts = require '../../calculators/payout'
 score = require '../../calculators/score'

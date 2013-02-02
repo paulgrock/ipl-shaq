@@ -12,4 +12,4 @@ competitionSummarySchema = new Schema
   score:
     type: Number
 
-module.exports = competitionSummarySchema
+module.exports = mongoose.model 'CompetitionSummary', competitionSummarySchema

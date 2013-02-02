@@ -1,6 +1,4 @@
-mongoose = require 'mongoose'
-userSchema = require '../../mongo/schemas/users'
-User = mongoose.model 'User', userSchema
+User = require '../../mongo/schemas/users'
 
 userJobs =
   new: (userData, cb)->

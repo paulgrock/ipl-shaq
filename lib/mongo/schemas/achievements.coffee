@@ -7,4 +7,4 @@ achievementsSchema = new Schema
     type: Number
     required: true
 
-module.exports = achievementsSchema
+module.exports = mongoose.model 'Achievement', achievementsSchema

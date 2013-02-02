@@ -12,4 +12,4 @@ pollSummarySchema = new Schema
   score:
     type: Number
 
-module.exports = pollSummarySchema
+module.exports = mongoose.model 'PollSummary', pollSummarySchema

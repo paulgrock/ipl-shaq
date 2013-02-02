@@ -17,4 +17,4 @@ voteSchema = new Schema
     default: Date.now
     required: true
 
-module.exports = voteSchema
+module.exports = mongoose.model 'Vote', voteSchema

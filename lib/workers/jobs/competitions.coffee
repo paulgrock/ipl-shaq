@@ -1,6 +1,4 @@
-mongoose = require 'mongoose'
-competitionSchema = require '../../mongo/schemas/competitions'
-Competition = mongoose.model 'Competition', competitionSchema
+Competition = require '../../mongo/schemas/competitions'
 
 competitionJobs =
   new: (competitionData, cb)->

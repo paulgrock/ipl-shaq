@@ -1,6 +1,4 @@
 express = require 'express'
-routes = require './routes'
-user = require './routes/user'
 http = require 'http'
 path = require 'path'
 redis = require 'redis'
@@ -30,16 +28,9 @@ app.configure ->
 app.configure 'development', ->
   app.use express.errorHandler()
 
-app.get '/', routes.index
-app.get '/users', user.list
-
 http.createServer(app).listen app.get('port'), ->
   console.log "Express server listening on port " + app.get('port')
 
 new Worker "polls"
 new Worker "votes"
 new Worker "users"
-
-db = mongoose.connection
-db.once 'open', ->
-  console.log "connected to mongo"

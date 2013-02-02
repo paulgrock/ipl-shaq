@@ -4,9 +4,6 @@ ObjectId = Schema.Types.ObjectId
 
 pollOptionsSchema = require './pollOptions'
 
-optionsLengthValidator = (value)->
-  return value.length is 2
-
 pollSchema = new Schema
   id:
     type: String
@@ -20,7 +17,6 @@ pollSchema = new Schema
   pollOptions:
     type: [pollOptionsSchema]
     required: true
-    validate: optionsLengthValidator
   total:
     type: Number
     default: 0
@@ -55,4 +51,8 @@ pollSchema = new Schema
     type: ObjectId
     ref: "Competitions"
 
-module.exports = pollSchema
+pollSchema.path("pollOptions").validate (options)->
+  return options.length is 2
+, "Poll must have 2 options"
+
+module.exports = mongoose.model "Poll", pollSchema

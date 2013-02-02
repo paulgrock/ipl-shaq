@@ -1,9 +1,5 @@
-mongoose = require 'mongoose'
-pollSchema = require '../../mongo/schemas/polls'
-competitionSchema = require '../../mongo/schemas/competitions'
-
-Poll = mongoose.model 'Poll', pollSchema
-Competition = mongoose.model 'Competition', competitionSchema
+Poll = require '../../mongo/schemas/polls'
+Competition = require '../../mongo/schemas/competitions'
 
 Event = require '../../events/event'
 payouts = require '../../calculators/payout'
