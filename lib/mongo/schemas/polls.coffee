@@ -47,13 +47,12 @@ pollSchema = new Schema
     type: ObjectId
     ref: 'VoteSummary'
   ]
+  scores: [
+    type: ObjectId
+    ref: 'PollSummary'
+  ]
   competition:
     type: ObjectId
     ref: "Competitions"
-
-pollSchema.pre "save", (next)->
-  if @pollOptions[0]?.name? and @pollOptions[1]?.name? and !@title?
-    @title = "#{@pollOptions[0].name} vs #{@pollOptions[1].name}"
-  next()
 
 module.exports = pollSchema

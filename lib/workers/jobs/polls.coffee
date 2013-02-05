@@ -1,6 +1,9 @@
 mongoose = require 'mongoose'
 pollSchema = require '../../mongo/schemas/polls'
+competitionSchema = require '../../mongo/schemas/competitions'
+
 Poll = mongoose.model 'Poll', pollSchema
+Competition = mongoose.model 'Competition', competitionSchema
 
 Event = require '../../events/event'
 payouts = require '../../calculators/payout'
@@ -18,12 +21,27 @@ pollJobs =
 
     VoteTimer.start poll
 
-    poll.save (err, poll)->
-      return cb err if err?
-      event = new Event pollData, "poll-start"
-      #event.emit (err, response)->
-      # return cb err if err?
-      cb()
+    Competition.findOneAndUpdate
+      id: poll.matchup.id
+    ,
+      id: poll.matchup.id
+      status: "active"
+      title: "#{poll.pollOptions[0].name} vs #{poll.pollOptions[1].name}"
+      startsAt: Date.now()
+    , upsert: true
+    , (err, competition)->
+      console.log arguments
+      competition.polls.push poll._id
+      competition.save()
+
+      poll.competition = competition._id
+      poll.save (err, poll)->
+        return cb err if err?
+        event = new Event pollData, "poll-start"
+        #event.emit (err, response)->
+        # return cb err if err?
+
+        cb()
 
   update: (pollId, pollData, cb)->
     pollData = closePoll pollData if pollData.state is "inactive"
@@ -52,7 +70,6 @@ pollJobs =
       pollData.endsAt = Date.now()
 
     score.calculate poll
-    #calculateScore
     #calculateAccuracy
 
     return pollData

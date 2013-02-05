@@ -6,10 +6,9 @@ voteSummarySchema = new Schema
   _poll:
     type: ObjectId
     ref: "Poll"
-  userId:
-    type: Number
-    required: true
-    unique: true
+  _user:
+    type: ObjectId
+    ref: "User"
   votedFor:
     type: String
     required: true
