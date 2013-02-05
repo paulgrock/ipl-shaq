@@ -20,14 +20,15 @@ voteJobs =
       id: pollData.id
     , (err, poll)->
       return cb err if err?
+
+      userPayout = 0
+      for option in poll.pollOptions when option.name is votedValue
+        userPayout = payouts.calculate poll, option.votes
+
       poll.pollOptions = voteJobs.incrementTotalFor votedValue, poll.pollOptions
       poll.total += 1
 
-      userPayout = 0
-
       for option in poll.pollOptions
-        if option.name is votedValue
-          userPayout = payouts.calculate poll, option.votes
         option.payout = payouts.calculate poll, option.votes
 
       User.findOne

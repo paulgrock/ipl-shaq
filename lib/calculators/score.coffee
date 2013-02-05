@@ -52,5 +52,7 @@ score =
                     score: scoresummary.score
                   cs.set _competition: competition
                   cs.save()
+                  competition.scores.push cs
+                  competition.save()
 
 module.exports = score
