@@ -27,8 +27,8 @@ voteJobs =
 
       User.findOne
         id: userId
-      , lean: true
-      , (err, user)->
+      .lean()
+      .exec (err, user)->
         vote = new Vote
           _user: user._id
           votedFor: votedValue
@@ -36,25 +36,18 @@ voteJobs =
           _poll: poll._id
         vote.save()
 
-        VoteSummary.findOne
+        VoteSummary.findOneAndUpdate
           _user: user._id
           _poll: poll._id
+        ,
+          votedFor: votedValue
+          payout: userPayout
+          $inc:
+            count: 1
+        ,
+          upsert: true
         , (err, doc)->
-          if doc?
-            doc.votedFor = votedValue
-            doc.payout = userPayout
-            doc.count += 1
-            doc.save()
-          else
-            voteSummary = new VoteSummary
-              _user: user._id
-              votedFor: votedValue
-              payout: userPayout
-              count: 1
-              _poll: poll._id
-            voteSummary.save (err, doc)->
-              poll.voteSummary.push voteSummary._id
-
+          poll.voteSummary.addToSet doc._id
           poll.votes.push vote._id
           voteTimer = new VoteTimer poll
           voteTimer.updateRollingVoteCount (err, rollingVotes)->
@@ -65,15 +58,9 @@ voteJobs =
             poll.save (err)->
               cb()
 
-
-      score.calculate poll
-
   incrementTotalFor: (votedValue, options)->
     for player in options when player.name is votedValue
       player.votes += 1
     return options
-
-  update: (pollData, cb)->
-    console.log pollData
 
 module.exports = voteJobs

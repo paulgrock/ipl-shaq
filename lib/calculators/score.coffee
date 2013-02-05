@@ -10,7 +10,8 @@ VoteSummary = require '../mongo/schemas/voteSummary'
 
 score =
   calculate: (poll)->
-    winner = "TubbyTheFat" #poll.matchup.game.winner
+
+    winner = poll.matchup.game.winner
 
     VoteSummary.find
        _poll: poll._id
@@ -27,12 +28,22 @@ score =
         Competition.findById poll.competition, (err, competition)->
           competitionSummaryEvent = new CompetitionSummaryEvent competition
           userStatsEvent = new UserStatsEvent()
-          PollSummary.find()
-          .where("_poll").in(competition.polls)
-          .sort("-score")
-          .exec (err, scoresummaries)->
+
+          mapReduceObj =
+            map: ->
+              emit @_user, @score
+            reduce: (key, vals)->
+              return Array.sum vals
+            query:
+              _poll:
+                $in: competition.polls
+
+          PollSummary.mapReduce mapReduceObj, (err, scoresummaries, stats)->
+            scoresummaries.sort (score1, score2)->
+              return score2.value - score1.value
+
             for scoresummary, index in scoresummaries
-              competitionSummaryEvent.emit "competitionSummary:findOneAndUpdate", scoresummaries
-              userStatsEvent.emit "userStats:findOneAndUpdate", competition, summary, index + 1
+              competitionSummaryEvent.emit "competitionSummary:findOneAndUpdate", scoresummary
+              userStatsEvent.emit "userStats:findOneAndUpdate", competition, scoresummary, index + 1
 
 module.exports = score

@@ -6,13 +6,12 @@ class UserStats extends EventEmitter
     @on "userStats:findOneAndUpdate", @findOneAndUpdate
 
   findOneAndUpdate: (competition, summary, rank)->
-    console.log rank
     UserStatsModel.findOneAndUpdate
       "summary.competition": competition._id
-      _user: summary._user
+      _user: summary._id
     ,
-      "summary.score": summary.score
       "summary.rank": rank
+      "summary.score": summary.value
     ,
       upsert: true
     .exec (err, userStats)->

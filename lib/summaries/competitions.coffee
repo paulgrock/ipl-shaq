@@ -8,9 +8,8 @@ class CompetitionSummary extends EventEmitter
   findOneAndUpdate: (summary)->
     CompetitionSummaryModel.findOneAndUpdate
       _competition: @competition._id
-      _user: summary._user
-    , $inc:
-        score: summary.score
+      _user: summary._id
+    , score: summary.value
     ,
       upsert: true
     .exec (err, competitionSummary)=>

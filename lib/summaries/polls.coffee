@@ -9,8 +9,7 @@ class PollSummary extends EventEmitter
     PollSummaryModel.findOneAndUpdate
       _poll: @poll._id
       _user: summary._user
-    , $inc:
-        score: summary.payout
+    , score: summary.payout
     ,
       upsert: true
     .exec (err, pollSummary)=>
