@@ -11,5 +11,7 @@ competitionSummarySchema = new Schema
     ref: "User"
   score:
     type: Number
+  rank:
+    type: Number
 
 module.exports = mongoose.model 'CompetitionSummary', competitionSummarySchema

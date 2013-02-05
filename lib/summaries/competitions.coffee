@@ -5,11 +5,13 @@ class CompetitionSummary extends EventEmitter
   constructor: (@competition, options = {}) ->
     @on "competitionSummary:findOneAndUpdate", @findOneAndUpdate
 
-  findOneAndUpdate: (summary)->
+  findOneAndUpdate: (summary, rank)->
     CompetitionSummaryModel.findOneAndUpdate
       _competition: @competition._id
       _user: summary._id
-    , score: summary.value
+    ,
+      score: summary.value
+      rank: rank
     ,
       upsert: true
     .exec (err, competitionSummary)=>

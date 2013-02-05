@@ -10,7 +10,6 @@ VoteSummary = require '../mongo/schemas/voteSummary'
 
 score =
   calculate: (poll)->
-
     winner = poll.matchup.game.winner
 
     VoteSummary.find
@@ -43,7 +42,7 @@ score =
               return score2.value - score1.value
 
             for scoresummary, index in scoresummaries
-              competitionSummaryEvent.emit "competitionSummary:findOneAndUpdate", scoresummary
+              competitionSummaryEvent.emit "competitionSummary:findOneAndUpdate", scoresummary, index + 1
               userStatsEvent.emit "userStats:findOneAndUpdate", competition, scoresummary, index + 1
 
 module.exports = score
