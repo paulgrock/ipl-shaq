@@ -22,4 +22,4 @@ voteSummarySchema = new Schema
     required: true
 
 
-module.exports = voteSummarySchema
+module.exports = mongoose.model 'VoteSummary', voteSummarySchema

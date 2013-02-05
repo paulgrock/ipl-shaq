@@ -1,6 +1,4 @@
-mongoose = require 'mongoose'
-voteSchema = require '../mongo/schemas/votes'
-Vote = mongoose.model 'Vote', voteSchema
+Vote = require '../mongo/schemas/votes'
 
 class VoteTimer
   constructor: (@poll, options = {}) ->

@@ -25,4 +25,4 @@ userSchema = new Schema
     ref: "UserStats"
   ]
 
-module.exports = userSchema
+module.exports = mongoose.model 'User', userSchema

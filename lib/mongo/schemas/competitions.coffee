@@ -24,4 +24,4 @@ competitionSchema = new Schema
     ref: 'CompetitionSummary'
   ]
 
-module.exports = competitionSchema
+module.exports = mongoose.model 'Competition', competitionSchema

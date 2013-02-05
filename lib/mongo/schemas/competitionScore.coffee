@@ -10,4 +10,4 @@ competitionScoreSchema = new Schema
     type: Number
     required: true
 
-module.exports = competitionScoreSchema
+module.exports = mongoose.model 'CompetitionScore', competitionScoreSchema

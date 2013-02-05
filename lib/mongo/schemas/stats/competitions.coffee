@@ -3,8 +3,6 @@ Schema = mongoose.Schema
 ObjectId = Schema.Types.ObjectId
 
 competitionStatsSchema = new Schema
-  title:
-    type: String
   rank:
     type: Number
     required: true
@@ -12,4 +10,4 @@ competitionStatsSchema = new Schema
     type: Number
     required: true
 
-module.exports = competitionStatsSchema
+module.exports = mongoose.model 'CompetitionStats', competitionStatsSchema

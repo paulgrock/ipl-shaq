@@ -3,16 +3,25 @@ Schema = mongoose.Schema
 ObjectId = Schema.Types.ObjectId
 
 userStatsSchema = new Schema
-  competitions:[
-    type: ObjectId
-    ref: "CompetitionStats"
+  summary:[
+    competition:
+      type: ObjectId
+      ref: "Competition"
+    rank:
+      type: Number
+    score:
+      type: Number
+
   ]
+  _user:
+    type: ObjectId
+    ref: "User"
   confidenceLevel:
     type: Number
 
   acheivements: [
     type: ObjectId
-    ref: "achievementsSchema"
+    ref: "Achievement"
   ]
 
-module.exports = userStatsSchema
+module.exports = mongoose.model 'UserStats', userStatsSchema
