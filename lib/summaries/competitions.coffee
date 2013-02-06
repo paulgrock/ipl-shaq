@@ -1,9 +1,7 @@
-EventEmitter = require('events').EventEmitter
 CompetitionSummaryModel = require '../mongo/schemas/summaries/competitions'
 
-class CompetitionSummary extends EventEmitter
+class CompetitionSummary
   constructor: (@competition, options = {}) ->
-    @on "competitionSummary:findOneAndUpdate", @findOneAndUpdate
 
   findOneAndUpdate: (summary, rank)->
     CompetitionSummaryModel.findOneAndUpdate

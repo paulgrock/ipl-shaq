@@ -1,11 +1,11 @@
 Poll = require '../mongo/schemas/polls'
 PollSummary = require '../mongo/schemas/summaries/polls'
-PollSummaryEvent = require '../summaries/polls'
+PollSummaryObj = require '../summaries/polls'
 
 Competition = require '../mongo/schemas/competitions'
-CompetitionSummaryEvent = require '../summaries/competitions'
+CompetitionSummary = require '../summaries/competitions'
 
-UserStatsEvent = require '../stats/users'
+UserStats = require '../stats/users'
 VoteSummary = require '../mongo/schemas/voteSummary'
 
 score =
@@ -19,14 +19,14 @@ score =
     .lean()
     .exec (err, docs)->
       Poll.findById poll._id, (err, poll)->
-        pollSummaryEvent = new PollSummaryEvent poll
+        pollSummary = new PollSummaryObj poll
 
         for summary in docs
-          pollSummaryEvent.emit "pollSummary:findOneAndUpdate", summary
+          pollSummary.findOneAndUpdate summary
 
         Competition.findById poll.competition, (err, competition)->
-          competitionSummaryEvent = new CompetitionSummaryEvent competition
-          userStatsEvent = new UserStatsEvent()
+          competitionSummary = new CompetitionSummary competition
+          userStats = new UserStats()
 
           mapReduceObj =
             map: ->
@@ -42,7 +42,7 @@ score =
               return score2.value - score1.value
 
             for scoresummary, index in scoresummaries
-              competitionSummaryEvent.emit "competitionSummary:findOneAndUpdate", scoresummary, index + 1
-              userStatsEvent.emit "userStats:findOneAndUpdate", competition, scoresummary, index + 1
+              competitionSummary.findOneAndUpdate scoresummary, index + 1
+              userStats.findOneAndUpdate competition, scoresummary, index + 1
 
 module.exports = score

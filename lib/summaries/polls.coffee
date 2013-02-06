@@ -1,9 +1,7 @@
-EventEmitter = require('events').EventEmitter
 PollSummaryModel = require '../mongo/schemas/summaries/polls'
 
-class PollSummary extends EventEmitter
+class PollSummary
   constructor: (@poll, options = {}) ->
-    @on "pollSummary:findOneAndUpdate", @findOneAndUpdate
 
   findOneAndUpdate: (summary)->
     PollSummaryModel.findOneAndUpdate
