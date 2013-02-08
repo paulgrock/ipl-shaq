@@ -1,62 +1,48 @@
 Poll = require '../mongo/schemas/polls'
 PollSummary = require '../mongo/schemas/summaries/polls'
-Competition = require '../mongo/schemas/competitions'
-CompetitionSummary = require '../mongo/schemas/summaries/competitions'
+PollSummaryObj = require '../summaries/polls'
 
-UserStats = require '../mongo/schemas/stats/users'
+Competition = require '../mongo/schemas/competitions'
+CompetitionSummary = require '../summaries/competitions'
+
+UserStats = require '../stats/users'
 VoteSummary = require '../mongo/schemas/voteSummary'
 
 score =
   calculate: (poll)->
-    winner = "TubbyTheFat" #poll.matchup.game.winner
+    winner = poll.matchup.game.winner
 
     VoteSummary.find
        _poll: poll._id
     .where("votedFor").equals(winner)
+    .select("_user payout")
     .lean()
     .exec (err, docs)->
       Poll.findById poll._id, (err, poll)->
+        pollSummary = new PollSummaryObj poll
 
         for summary in docs
-          PollSummary.findOneAndUpdate
-            _poll: poll._id
-            _user: summary._user
-          , $inc:
-              score: summary.payout
-          ,
-            upsert: true
-          .exec (err, pollSummary)->
-            poll.scores.addToSet pollSummary
-            poll.save()
+          pollSummary.findOneAndUpdate summary
 
         Competition.findById poll.competition, (err, competition)->
-          PollSummary
-          .find()
-          .where("_poll").in(competition.polls)
-          .sort("-score")
-          .exec (err, scoresummaries)->
-            console.log scoresummaries.length
-            for scoresummary in scoresummaries
-              CompetitionSummary.findOneAndUpdate
-                "_competition": competition._id
-                _user: scoresummary._user
-              , $inc:
-                  score: scoresummary.score
-              ,
-                upsert: true
-              .exec (err, competitionSummary)->
-                competition.scores.addToSet competitionSummary
-                competition.save()
+          competitionSummary = new CompetitionSummary competition
+          userStats = new UserStats()
 
-              UserStats.findOneAndUpdate
-                "summary.competition": competition._id
-                "_user": scoresummary._user
-              ,
-                "summary.score": scoresummary.score
-                "summary.rank": 1
-              ,
-                upsert: true
-              .exec (err, userSummary)->
-                console.log arguments
+          mapReduceObj =
+            map: ->
+              emit @_user, @score
+            reduce: (key, vals)->
+              return Array.sum vals
+            query:
+              _poll:
+                $in: competition.polls
+
+          PollSummary.mapReduce mapReduceObj, (err, scoresummaries, stats)->
+            scoresummaries.sort (score1, score2)->
+              return score2.value - score1.value
+
+            for scoresummary, index in scoresummaries
+              competitionSummary.findOneAndUpdate scoresummary, index + 1
+              userStats.findOneAndUpdate competition, scoresummary, index + 1
 
 module.exports = score

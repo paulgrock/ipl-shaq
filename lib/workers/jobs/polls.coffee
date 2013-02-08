@@ -38,15 +38,6 @@ pollJobs =
 
         cb()
 
-  update: (pollId, pollData, cb)->
-    pollData = closePoll pollData if pollData.state is "inactive"
-    Poll.findOneAndUpdate
-      id: pollData.id
-    , pollData
-    , (err, poll)->
-      return cb err if err?
-      cb()
-
   stateChange: (pollData, cb)->
     Poll.findOne
       id: pollData.id
@@ -57,17 +48,25 @@ pollJobs =
         pollData.endsAt = Date.now()
       poll.save cb
 
-  closePoll: (pollData)->
-    event = new Event pollData, "poll-end"
+  closePoll: (poll)->
+    event = new Event poll, "poll-end"
     #event.emit()
 
-    if pollData.endsAt is null or "null"
-      pollData.endsAt = Date.now()
+    if poll.endsAt is null or "null"
+      poll.endsAt = Date.now()
+      poll.save()
 
     score.calculate poll
-    #calculateAccuracy
+    return poll
 
-    return pollData
+  update: (pollId, pollData, cb)->
+    Poll.findOneAndUpdate
+      id: pollId
+    , pollData
+    , (err, poll)->
+      return cb err if err?
+      pollJobs.closePoll poll if pollData.state is "inactive"
+      cb()
 
   delete: (pollId, cb)->
     Poll.findOneAndRemove

@@ -19,7 +19,7 @@ userStatsSchema = new Schema
   confidenceLevel:
     type: Number
 
-  acheivements: [
+  achievements: [
     type: ObjectId
     ref: "Achievement"
   ]
